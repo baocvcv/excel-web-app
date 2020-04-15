@@ -22,11 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'tc5chxn8r7#=kipwcz(ju-pm#!&)7#q99=(s_gpko(t3#n39#s'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 ALLOWED_HOSTS = [
-    'localhost',
     'excel.aboringanduselesswebsite.com',
 ]
 
@@ -127,3 +123,6 @@ STATIC_URL = '/static/'
 # Media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+if os.environ.get('DJANGO_DEV') is not None:
+    from .settings_dev import *
