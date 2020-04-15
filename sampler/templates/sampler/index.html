@@ -1,8 +1,13 @@
-<h3>excel抽样工具</h3>
+{% extends 'sampler/base.html' %}
+{% block content %}
+
+<h1 class="mt-2">excel抽样工具</h1>
 <form name='upload_form' enctype='multipart/form-data' action="{% url 'sampler:index' %}" method='POST' >
     {% csrf_token %}
     {{ form.errors }}
     <p> {{ form.upFile.label_tag }} </p>
     <p> {{ form.upFile }} </p>
-    <input type='submit' value='确认' />
+    <button type='submit' class="btn btn-success">确认</button>
 </form>
+
+{% endblock content %}

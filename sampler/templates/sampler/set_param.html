@@ -1,3 +1,6 @@
+{% extends 'sampler/base.html' %}
+{% block content %}
+
 <form name='select_form' action="{% url 'sampler:do-sampling' doc_id %}" method='POST' >
     {% csrf_token %}
     {{ form.errors }}
@@ -6,3 +9,5 @@
     <p> {{ form.dropDown.label_tag }} {{ form.dropDown }} </p>
     <input type='submit' value='确认' />
 </form>
+
+{% endblock content %}
