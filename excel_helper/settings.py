@@ -25,7 +25,9 @@ SECRET_KEY = 'tc5chxn8r7#=kipwcz(ju-pm#!&)7#q99=(s_gpko(t3#n39#s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'excel.aboringanduselesswebsite.com',
+]
 
 
 # Application definition
@@ -118,6 +120,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 # Media files
