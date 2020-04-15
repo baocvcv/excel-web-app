@@ -1,4 +1,4 @@
-<form name='select_form' action='{% url 'set-param' %}' method='POST' >
+<form name='select_form' action="{% url 'sampler:do-sampling' doc_id %}" method='POST' >
     {% csrf_token %}
     {{ form.errors }}
     <p> {{ form.useSize }} {{ form.useSize.label_tag }} {{ form.size }} </p>

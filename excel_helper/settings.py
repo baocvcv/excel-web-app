@@ -26,6 +26,7 @@ SECRET_KEY = 'tc5chxn8r7#=kipwcz(ju-pm#!&)7#q99=(s_gpko(t3#n39#s'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'localhost',
     'excel.aboringanduselesswebsite.com',
 ]
 

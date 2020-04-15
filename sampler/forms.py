@@ -5,7 +5,6 @@ class FileForm(forms.Form):
         label='上传需要抽样的excel文档'
     )
 
-
 class SelectColForm(forms.Form):
     useSize = forms.BooleanField(required=False, label='固定数量抽样：')
     size = forms.IntegerField(initial=10, min_value=0, max_value=5000)

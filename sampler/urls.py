@@ -3,8 +3,8 @@ from django.views.generic import TemplateView
 
 from . import views
 
+app_name = 'sampler'
 urlpatterns = [
     path('', views.index, name='index'),
-    path('upload/', views.UploadFile, name='upload'),
-    path('set-param/', views.SetParam, name='set-param'),
+    path('<int:doc_id>/setparam/', views.SetParam, name='do-sampling'),
 ]
