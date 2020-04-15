@@ -1,0 +1,8 @@
+<form name='select_form' action='{% url 'set-param' %}' method='POST' >
+    {% csrf_token %}
+    {{ form.errors }}
+    <p> {{ form.useSize }} {{ form.useSize.label_tag }} {{ form.size }} </p>
+    <p> {{ form.useRate }} {{ form.useRate.label_tag }} {{ form.rate }} </p>
+    <p> {{ form.dropDown.label_tag }} {{ form.dropDown }} </p>
+    <input type='submit' value='确认' />
+</form>

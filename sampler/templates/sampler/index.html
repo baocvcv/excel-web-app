@@ -1,0 +1,8 @@
+<h3>excel抽样工具</h3>
+<form name='upload_form' enctype='multipart/form-data' action='{% url 'index' %}' method='POST' >
+    {% csrf_token %}
+    {{ form.errors }}
+    <p> {{ form.upFile.label_tag }} </p>
+    <p> {{ form.upFile }} </p>
+    <input type='submit' value='确认' />
+</form>
