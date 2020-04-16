@@ -9,62 +9,9 @@ from os.path import join
 from datetime import datetime
 from mimetypes import guess_type
 
-import xlrd
-import xlwt
-
 from .forms import FileForm, SelectColForm
 from .models import ExcelDocument
-
-# TODO: move these somewhere else
-# helper
-def get_headers(filePath):
-    workSheet = xlrd.open_workbook(filePath).sheet_by_index(0)
-    headers = workSheet.row_values(0)
-    return headers
-
-def do_sampling(sourceFile, config):
-    workSheet = xlrd.open_workbook(sourceFile).sheet_by_index(0)
-    # sampling
-    dpts = workSheet.col_values(int(config['dropDown']))
-    indices = []
-    sampleSize = config['size'] if config['useSize'] else 0
-    sampleRate = config['rate'] if config['useRate'] else 0
-
-    nEntry = workSheet.nrows
-    start = 1
-    while start < nEntry:
-        end = start
-        while end < nEntry and dpts[start] == dpts[end]:
-            end += 1
-
-        size = end - start
-        realSampleSize = max(sampleSize, sampleRate*size/100)
-        step = max(size / realSampleSize, 1)
-        for i in range(int(realSampleSize)):
-            val = int(start + i * step)
-            if val >= end:
-                break
-            indices.append(val)
-        start = end
-    
-    # create workbook
-    result = xlwt.Workbook()
-    sheet1 = result.add_sheet('Sheet1')
-    # formats
-    formatDate = xlwt.easyxf(num_format_str='yyyy.mm.dd')
-    formatNum = xlwt.easyxf(num_format_str='0')
-    # write
-    sheet1.write(0, 0, '序号')
-    for i in range(workSheet.ncols):
-        sheet1.row(0).write(i+1, workSheet.cell(0,i).value)
-    targetRow = 1
-    for i in indices:
-        for j in range(workSheet.ncols):
-            sheet1.row(targetRow).write(j, workSheet.cell(i,j).value)
-        targetRow += 1
-    saveTo = join(settings.MEDIA_ROOT, 'result.xlsx')
-    result.save(saveTo)
-    return saveTo
+from .sampling_helpers import get_headers, do_sampling
 
 # Create your views here.
 def index(request):
@@ -96,7 +43,10 @@ def SetParam(request, doc_id):
         form = SelectColForm(request.POST, request.FILES)
         form.fields['dropDown'].choices = params
         if form.is_valid():
-            filename = do_sampling(sourceFile, form.cleaned_data)
+            # save the sampling result
+            result = do_sampling(sourceFile, form.cleaned_data)
+            filename = join(settings.MEDIA_ROOT, 'result_tmp.xlsx')
+            result.save(filename)
             # let user download the result
             response = FileResponse(open(filename, 'rb'))
             response['content_type'] = guess_type(filename)
