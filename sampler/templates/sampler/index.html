@@ -1,12 +1,24 @@
 {% extends 'sampler/base.html' %}
 {% block content %}
 
-<h1 class="mt-2">excel抽样工具</h1>
+<h1 class="mt-2">Excel抽样工具</h1>
+<h4>注意事项</h4>
+<ul class="list-group">
+    <li class="list-group-item">请上传".xlsx"格式的文件</li>
+    <li class="list-group-item">请将需要抽样的表格放在Excel文档的最开始</li>
+    <li class="list-group-item">提交文件后，可以选择抽样参数以及抽样使用的列</li>
+</ul>
 <form name='upload_form' enctype='multipart/form-data' action="{% url 'sampler:index' %}" method='POST' >
     {% csrf_token %}
-    {{ form.errors }}
-    <p> {{ form.upFile.label_tag }} </p>
-    <p> {{ form.upFile }} </p>
+    <div class="form-group">
+        {{ form.errors }}
+    </div>
+    <div class="form-group">
+        <p> {{ form.upFile.label_tag }} </p>
+    </div>
+    <div class="form-group">
+        <p> {{ form.upFile }} </p>
+    </div>
     <button type='submit' class="btn btn-success">确认</button>
 </form>
 

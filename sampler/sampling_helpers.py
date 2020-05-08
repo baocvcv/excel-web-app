@@ -1,24 +1,25 @@
-import xlrd
-import xlwt
+from openpyxl import load_workbook, Workbook
 
 # helper
 def get_headers(filePath):
     ' Get excel headers '
-    workSheet = xlrd.open_workbook(filePath).sheet_by_index(0)
-    headers = workSheet.row_values(0)
+    sheet = load_workbook(filePath).worksheets[0]
+    headers = [sheet.cell(sheet.min_row, i).value for i in range(sheet.min_column, sheet.max_column+1)]
     return headers
 
 def do_sampling(sourceFile, config):
     ' Sample sourcefile according to config '
     ' config = {"size":3, "useSize":True, "rate":4, "useRate":False} '
-    workSheet = xlrd.open_workbook(sourceFile).sheet_by_index(0)
+    sheet = load_workbook(sourceFile).worksheets[0]
     # sampling
-    dpts = workSheet.col_values(int(config['dropDown']))
+    # dpts = sheet.col_values(int(config['dropDown']))
+    dpt_col = int(config['dropDown'])+sheet.min_column
+    dpts = [sheet.cell(i, dpt_col).value for i in range(sheet.min_row, sheet.max_row+1)]
     indices = []
     sampleSize = config['size'] if config['useSize'] else 0
     sampleRate = config['rate'] if config['useRate'] else 0
 
-    nEntry = workSheet.nrows
+    nEntry = sheet.max_row - sheet.min_row + 1
     start = 1
     while start < nEntry:
         end = start
@@ -36,26 +37,21 @@ def do_sampling(sourceFile, config):
         start = end
     
     # create workbook
-    result = xlwt.Workbook()
-    targetSheet = result.add_sheet('Sheet1')
-    # formats
-    formatDate = xlwt.easyxf(num_format_str='yyyy.mm.dd')
-    formatNum = xlwt.easyxf(num_format_str='0')
+    result = Workbook()
+    targetSheet = result.active
     # write
-    targetSheet.write(0, 0, '序号')
-    for i in range(workSheet.ncols):
-        targetSheet.row(0).write(i+1, workSheet.cell(0,i).value)
-    targetRow = 1
+    targetSheet.cell(1, 1).value = '序号'
+    ncols = sheet.max_column - sheet.min_column + 1
+    for i in range(ncols):
+        targetSheet.cell(1, i+2).value = sheet.cell(sheet.min_row, i+sheet.min_column).value
+
+    targetRow = 2
     for i in indices:
-        targetSheet.row(targetRow).write(0, targetRow)
-        for j in range(workSheet.ncols):
-            sourceCell = workSheet.cell(i, j)
-            if sourceCell.ctype == 2:
-                targetSheet.row(targetRow).write(j+1, sourceCell.value, formatNum)
-            elif sourceCell.ctype == 3:
-                targetSheet.row(targetRow).write(j+1, sourceCell.value, formatDate)
-            else:
-                targetSheet.row(targetRow).write(j+1, sourceCell.value)
+        targetSheet.cell(targetRow, 1).value = targetRow - 1
+        for j in range(ncols):
+            sourceCell = sheet.cell(i+sheet.min_row, j+sheet.min_column)
+            targetSheet.cell(targetRow, j+2).value = sourceCell.value
+            targetSheet.cell(targetRow, j+2).data_type = sourceCell.data_type
         targetRow += 1
     return result
 
