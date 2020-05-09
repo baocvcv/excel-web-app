@@ -45,13 +45,13 @@ def SetParam(request, doc_id):
         if form.is_valid():
             # save the sampling result
             result = do_sampling(sourceFile, form.cleaned_data)
-            filename = join(settings.MEDIA_ROOT, 'result_tmp.xlsx')
+            filename = join(settings.MEDIA_ROOT, 'result_tmp.xls')
             result.save(filename)
             # let user download the result
             response = FileResponse(open(filename, 'rb'))
             response['content_type'] = guess_type(filename)
             response['Content-Disposition'] = 'attachment;'\
-                'filename=result_%d.xlsx' % datetime.now().microsecond
+                'filename=result_%d.xls' % datetime.now().microsecond
             return response
     form = SelectColForm()
     form.fields['dropDown'].choices = params
